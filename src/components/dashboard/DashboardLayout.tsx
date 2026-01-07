@@ -11,7 +11,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
-        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F8F9FA' }}>
+        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
             {/* Sidebar */}
             {!isMobile && <Sidebar />}
 

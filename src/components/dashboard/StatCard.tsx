@@ -1,4 +1,4 @@
-import { Paper, Typography, Box, Stack, Skeleton } from '@mui/material';
+import { Paper, Typography, Box, Stack, Skeleton, useTheme } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import PeopleIcon from '@mui/icons-material/People';
@@ -26,12 +26,14 @@ interface StatCardProps {
 }
 
 export const StatCard = ({ label, value, trend, trendLabel, icon, loading }: StatCardProps) => {
+    const theme = useTheme();
+    const isDark = theme.palette.mode === 'dark';
     const iconConfig = ICONS[icon] || ICONS.default;
     const IconComponent = iconConfig.icon;
 
     if (loading) {
         return (
-            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, bgcolor: '#fff', height: '100%' }}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, bgcolor: 'background.paper', height: '100%' }}>
                 <Stack direction="row" justifyContent="space-between" mb={2}>
                     <Skeleton variant="text" width="60%" />
                     <Skeleton variant="circular" width={40} height={40} />
@@ -43,13 +45,22 @@ export const StatCard = ({ label, value, trend, trendLabel, icon, loading }: Sta
     }
 
     return (
-        <Paper elevation={0} sx={{ p: 2.5, borderRadius: 3, bgcolor: '#fff', border: '1px solid #EAECF0', height: '100%' }}>
+        <Paper
+            elevation={0}
+            sx={{
+                p: 2.5,
+                borderRadius: 3,
+                bgcolor: 'background.paper',
+                border: isDark ? '1px solid #333' : '1px solid #EAECF0',
+                height: '100%'
+            }}
+        >
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
                 <Typography variant="body2" color="text.secondary" fontWeight={500}>
                     {label}
                 </Typography>
                 <Box sx={{
-                    bgcolor: iconConfig.color,
+                    bgcolor: isDark ? `${iconConfig.color}20` : iconConfig.color, // Dim background in dark mode
                     p: 1,
                     borderRadius: 2,
                     display: 'flex',

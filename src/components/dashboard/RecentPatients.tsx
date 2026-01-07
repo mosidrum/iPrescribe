@@ -9,10 +9,12 @@ import {
     Typography,
     Box,
     Button,
-    Chip
+    Chip,
+    useTheme
 } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import type { RecentPatient } from '../../types';
+import { useDashboardStore } from '../../store/useDashboardStore';
 
 interface RecentPatientsProps {
     data: RecentPatient[] | undefined;
@@ -20,23 +22,43 @@ interface RecentPatientsProps {
 }
 
 export const RecentPatients = ({ data, isLoading }: RecentPatientsProps) => {
+    const theme = useTheme();
+    const { limit, setLimit } = useDashboardStore();
+    const isDark = theme.palette.mode === 'dark';
+
+    const handleSeeAll = () => {
+        setLimit(50);
+    };
+
     return (
-        <Paper elevation={0} sx={{ p: 0, borderRadius: 3, border: '1px solid #EAECF0', overflow: 'hidden' }}>
-            <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #EAECF0' }}>
-                <Typography variant="h6" fontWeight={600}>
+        <Paper
+            elevation={0}
+            sx={{
+                p: 0,
+                borderRadius: 3,
+                border: isDark ? '1px solid #333' : '1px solid #EAECF0',
+                overflow: 'hidden',
+                bgcolor: 'background.paper'
+            }}
+        >
+            <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: isDark ? '1px solid #333' : '1px solid #EAECF0' }}>
+                <Typography variant="h6" fontWeight={600} sx={{ fontFamily: 'Montserrat' }}>
                     Recent Patients Sign Up
                 </Typography>
-                <Button
-                    endIcon={<ArrowForwardIosIcon sx={{ fontSize: '12px !important' }} />}
-                    sx={{ textTransform: 'none', color: 'text.secondary', fontWeight: 500 }}
-                >
-                    See All
-                </Button>
+                {limit < 50 && (
+                    <Button
+                        onClick={handleSeeAll}
+                        endIcon={<ArrowForwardIosIcon sx={{ fontSize: '12px !important' }} />}
+                        sx={{ textTransform: 'none', color: 'text.secondary', fontWeight: 500 }}
+                    >
+                        See All
+                    </Button>
+                )}
             </Box>
 
             <TableContainer>
                 <Table sx={{ minWidth: 1000 }}>
-                    <TableHead sx={{ bgcolor: '#F9FAFB' }}>
+                    <TableHead sx={{ bgcolor: isDark ? '#1F2937' : '#F9FAFB' }}>
                         <TableRow>
                             <TableCell sx={{ color: 'text.secondary', fontWeight: 500 }}>#</TableCell>
                             <TableCell sx={{ color: 'text.secondary', fontWeight: 500 }}>Sign Up Date</TableCell>
@@ -74,8 +96,8 @@ export const RecentPatients = ({ data, isLoading }: RecentPatientsProps) => {
                                             label={row.status}
                                             size="small"
                                             sx={{
-                                                bgcolor: '#ECFDF3',
-                                                color: '#027A48',
+                                                bgcolor: row.status === 'Verified' ? (isDark ? '#064E3B' : '#ECFDF3') : '#F2F4F7',
+                                                color: row.status === 'Verified' ? (isDark ? '#6EE7B7' : '#027A48') : '#344054',
                                                 fontWeight: 500,
                                                 borderRadius: '6px'
                                             }}

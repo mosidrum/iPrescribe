@@ -5,39 +5,41 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export const api = {
-    getDashboardData: async (): Promise<DashboardData> => {
+    getDashboardData: async (limit: number = 5, _startDate?: Date | null, _endDate?: Date | null): Promise<DashboardData> => {
+        // Simulate network latency
         await new Promise(resolve => setTimeout(resolve, 800));
 
-        // Generate dynamic stats
+        // Generate dynamic stats with randomization to simulate "different data" on range change
         const stats: DashboardStat[] = [
-            { label: 'Total Patients', value: randomInt(10, 50), trend: -0.10, trendLabel: 'Since last week', icon: 'patients' },
-            { label: 'Total Doctors', value: randomInt(5, 20), trend: -0.10, trendLabel: 'Since last week', icon: 'doctors' },
-            { label: 'Pending Reviews', value: randomInt(0, 10), trend: -0.10, trendLabel: 'Since last week', icon: 'reviews' },
-            { label: 'Total Consultations', value: 0, trend: -0.10, trendLabel: 'Since last week', icon: 'consultations' },
-            { label: 'Prescriptions Issued', value: 0, trend: -0.10, trendLabel: 'Since last week', icon: 'prescriptions' },
+            { label: 'Total Patients', value: randomInt(10, 100), trend: -0.10, trendLabel: 'Since last week', icon: 'patients' },
+            { label: 'Total Doctors', value: randomInt(5, 50), trend: randomInt(-5, 5) / 100, trendLabel: 'Since last week', icon: 'doctors' },
+            { label: 'Pending Reviews', value: randomInt(0, 20), trend: -0.10, trendLabel: 'Since last week', icon: 'reviews' },
+            { label: 'Total Consultations', value: randomInt(100, 500), trend: 0.05, trendLabel: 'Since last week', icon: 'consultations' },
+            { label: 'Prescriptions Issued', value: randomInt(50, 300), trend: 0.12, trendLabel: 'Since last week', icon: 'prescriptions' },
         ];
 
         // Generate Charts Data
-        const consultationTrend = months.map(m => ({ label: m, value: randomInt(30, 80) }));
-        const prescriptionTrend = months.map(m => ({ label: m, value: randomInt(40, 90) }));
-        const doctorVsPatient = months.map(m => ({ label: m, value: randomInt(20, 70), value2: randomInt(40, 100) }));
+        const consultationTrend = months.map(m => ({ label: m, value: randomInt(30, 150) }));
+        const prescriptionTrend = months.map(m => ({ label: m, value: randomInt(40, 200) }));
+        const doctorVsPatient = months.map(m => ({ label: m, value: randomInt(20, 100), value2: randomInt(40, 150) }));
 
         const specialties = [
-            { label: 'Cardiology', value: 30 },
-            { label: 'Pediatrics', value: 45 },
-            { label: 'Surgery', value: 15 },
-            { label: 'Others', value: 10 },
+            { label: 'Cardiology', value: randomInt(20, 40) },
+            { label: 'Pediatrics', value: randomInt(30, 50) },
+            { label: 'Surgery', value: randomInt(10, 25) },
+            { label: 'Others', value: randomInt(5, 15) },
         ];
 
         // Generate Recent Patients
-        const recentPatients: RecentPatient[] = Array.from({ length: 5 }).map((_, i) => ({
+        // Generate exactly 'limit' number of records
+        const recentPatients: RecentPatient[] = Array.from({ length: limit }).map((_, i) => ({
             id: String(i + 1),
             signUpDate: `2024-09-${randomInt(1, 30).toString().padStart(2, '0')}`,
-            name: ['Isagi Yoichi', 'Esther Howard', 'Jenny Wilson', 'Guy Hawkins', 'Jacob Jones'][i] || 'User Name',
-            email: ['isagi.yoichi@example.com', 'sara.cruz@example.com', 'felicia.reid@example.com', 'tanya.hill@example.com', 'jacob@example.com'][i],
-            phone: `(555) 555-010${i}`,
+            name: ['Isagi Yoichi', 'Esther Howard', 'Jenny Wilson', 'Guy Hawkins', 'Jacob Jones', 'Robert Fox', 'Cody Fisher', 'Albert Flores', 'Marvin McKinney', 'Jerome Bell'][i % 10] + (i > 9 ? ` ${i}` : ''),
+            email: `user${i}@example.com`,
+            phone: `(555) 555-${String(i).padStart(4, '0')}`,
             lastSeen: `2024-09-05 15:30:37`,
-            location: ['Lagos', 'Abuja', 'Sokoto', 'Kaduna', 'Ogun'][i],
+            location: ['Lagos', 'Abuja', 'Sokoto', 'Kaduna', 'Ogun'][i % 5],
             device: i % 2 === 0 ? 'iOS' : 'Android',
             status: 'Verified',
         }));

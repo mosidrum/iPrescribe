@@ -1,11 +1,33 @@
-import { AppBar, Toolbar, Stack, Typography, IconButton, Button, Avatar, Box } from '@mui/material';
+import { useState } from 'react';
+import { AppBar, Toolbar, Stack, Typography, IconButton, Button, Avatar, Box, Menu, MenuItem } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useThemeStore } from '../../store/useThemeStore';
+import { useDashboardStore } from '../../store/useDashboardStore';
 
 export const TopBar = () => {
     const user = useAuthStore((state) => state.user);
+    const { mode, toggleTheme } = useThemeStore();
+    const { dateRange, setDateRange } = useDashboardStore();
+
+    // Date Menu State
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleDateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleDateClose = (newRange?: string) => {
+        if (newRange) {
+            setDateRange(newRange);
+        }
+        setAnchorEl(null);
+    };
 
     return (
         <AppBar
@@ -13,10 +35,11 @@ export const TopBar = () => {
             color="inherit"
             elevation={0}
             sx={{
-                width: `calc(100% - 280px)`,
-                ml: '280px',
-                bgcolor: '#fff',
-                borderBottom: '1px solid rgba(0,0,0,0.05)',
+                width: { md: `calc(100% - 280px)` },
+                ml: { md: '280px' },
+                bgcolor: 'background.paper',
+                borderBottom: '1px solid',
+                borderColor: 'divider',
                 py: 1
             }}
         >
@@ -30,22 +53,33 @@ export const TopBar = () => {
                     </Typography>
                 </Box>
 
-                <Stack direction="row" spacing={3} alignItems="center">
+                <Stack direction="row" spacing={2} alignItems="center">
                     <Button
                         variant="outlined"
                         startIcon={<CalendarTodayIcon fontSize="small" />}
                         endIcon={<KeyboardArrowDownIcon />}
+                        onClick={handleDateClick}
                         sx={{
                             borderRadius: '8px',
-                            borderColor: '#E0E0E0',
+                            borderColor: 'divider',
                             color: 'text.primary',
                             textTransform: 'none',
                             py: 1,
-                            px: 2
+                            px: 2,
+                            display: { xs: 'none', sm: 'flex' }
                         }}
                     >
-                        12th Sept - 15th Sept, 2025
+                        {dateRange}
                     </Button>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={() => handleDateClose()}
+                    >
+                        <MenuItem onClick={() => handleDateClose('12th Sept - 15th Sept, 2025')}>Last 7 Days</MenuItem>
+                        <MenuItem onClick={() => handleDateClose('1st Sept - 30th Sept, 2025')}>Last 30 Days</MenuItem>
+                        <MenuItem onClick={() => handleDateClose('1st Jan - 31st Dec, 2025')}>This Year</MenuItem>
+                    </Menu>
 
                     <Button
                         variant="contained"
@@ -55,11 +89,16 @@ export const TopBar = () => {
                             textTransform: 'none',
                             py: 1,
                             px: 3,
-                            fontWeight: 600
+                            fontWeight: 600,
+                            display: { xs: 'none', sm: 'block' }
                         }}
                     >
                         Export
                     </Button>
+
+                    <IconButton onClick={toggleTheme} color="default">
+                        {mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+                    </IconButton>
 
                     <IconButton>
                         <NotificationsNoneIcon />

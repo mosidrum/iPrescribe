@@ -5,11 +5,15 @@ import { StatCard } from '../components/dashboard/StatCard';
 import { ChartWidget } from '../components/dashboard/Charts';
 import { RecentPatients } from '../components/dashboard/RecentPatients';
 import { api } from '../services/api';
+import { useDashboardStore } from '../store/useDashboardStore';
 
 const DashboardPage = () => {
+    const { limit, dateRange } = useDashboardStore();
+
     const { data, isLoading } = useQuery({
-        queryKey: ['dashboard-data'],
-        queryFn: api.getDashboardData
+        queryKey: ['dashboard-data', limit, dateRange],
+        queryFn: () => api.getDashboardData(limit),
+        staleTime: 0, // Ensure fresh data on param change if desired, though queryKey handles it
     });
 
     const stats = data?.stats || [];
@@ -53,6 +57,8 @@ const DashboardPage = () => {
                             title="Consultation Over Time"
                             type="line"
                             data={data?.consultationTrend || []}
+                            color="#2E90FA"
+                            label="Consultations"
                         />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
@@ -60,6 +66,8 @@ const DashboardPage = () => {
                             title="Prescription Volume Trend"
                             type="line"
                             data={data?.prescriptionTrend || []}
+                            color="#12B76A"
+                            label="Prescriptions"
                         />
                     </Grid>
                 </Grid>
@@ -82,6 +90,7 @@ const DashboardPage = () => {
                     </Grid>
                 </Grid>
 
+                {/* Recent Patients Table */}
                 <RecentPatients
                     data={data?.recentPatients}
                     isLoading={isLoading}
