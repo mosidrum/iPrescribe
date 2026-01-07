@@ -20,9 +20,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Logo } from '../common/Logo';
 
 const NAV_LINKS = [
-    { label: 'Home', href: '#' },
-    { label: 'Features', href: '#features' },
-    { label: 'Contact us', href: '#contact' },
+    { label: 'Home', href: '/' },
+    { label: 'Features', href: '/' },
+    { label: 'Contact us', href: '/' },
 ];
 
 export const Navbar = () => {
@@ -46,7 +46,7 @@ export const Navbar = () => {
                 {NAV_LINKS.map((item) => (
                     <ListItem key={item.label} disablePadding>
                         <ListItemButton href={item.href} onClick={handleDrawerToggle}>
-                            <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600 }} />
+                            <ListItemText primary={item.label} />
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -121,6 +121,7 @@ export const Navbar = () => {
                 onClose={handleDrawerToggle}
                 ModalProps={{ keepMounted: true }}
                 PaperProps={{ sx: { width: '80%', maxWidth: 300 } }}
+
             >
                 {drawer}
             </Drawer>

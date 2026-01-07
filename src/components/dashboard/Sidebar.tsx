@@ -10,7 +10,10 @@ import HistoryIcon from '@mui/icons-material/History';
 import ArticleIcon from '@mui/icons-material/Article';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import WebIcon from '@mui/icons-material/Web';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom';
 import { Logo } from '../common/Logo';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const MAIN_MENU = [
     { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', active: true },
@@ -29,7 +32,17 @@ const ADMIN_MENU = [
     { label: 'Website Updates', icon: <WebIcon />, path: '/website' },
 ];
 
+
+
 export const Sidebar = () => {
+    const logout = useAuthStore((state) => state.logout);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
     return (
         <Box
             sx={{
@@ -113,6 +126,29 @@ export const Sidebar = () => {
                         </ListItem>
                     ))}
                 </List>
+            </Box>
+
+            {/* Logout Section */}
+            <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <ListItemButton
+                    onClick={handleLogout}
+                    sx={{
+                        borderRadius: 1,
+                        py: 1.5,
+                        color: '#FF6B6B', // Light red for logout
+                        '&:hover': {
+                            bgcolor: 'rgba(255, 107, 107, 0.1)',
+                        }
+                    }}
+                >
+                    <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                        <LogoutIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary="Logout"
+                        primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 600 }}
+                    />
+                </ListItemButton>
             </Box>
         </Box>
     );
