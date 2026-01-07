@@ -1,41 +1,59 @@
-import type { Doctor, Prescription, UserStats } from '../types';
+import type { Doctor, Prescription, UserStats, DashboardData, DashboardStat, RecentPatient } from '../types';
 
-// Mock Data
-const MOCK_DOCTORS: Doctor[] = [
-    { id: '1', name: 'Dr. Olawale O.', specialty: 'Obstetrics', rating: 5.0, image: 'https://i.pravatar.cc/150?u=1' },
-    { id: '2', name: 'Dr. Nguyen B.', specialty: 'Cardiology', rating: 4.8, image: 'https://i.pravatar.cc/150?u=2' },
-    { id: '3', name: 'Dr. Anthony C.', specialty: 'Pediatrics', rating: 4.9, image: 'https://i.pravatar.cc/150?u=3' },
-    { id: '4', name: 'Dr. Chinedum A.', specialty: 'Neurology', rating: 5.0, image: 'https://i.pravatar.cc/150?u=4' },
-];
-
-const MOCK_PRESCRIPTIONS: Prescription[] = [
-    { id: '101', medication: 'Lisinopril', type: 'Cardiology', doctor: 'Dr. Esther Howard', date: '2024-08-27T15:08:00', status: 'Pending' },
-    { id: '102', medication: 'Amoxicillin', type: 'General Practice', doctor: 'Dr. Esther Howard', date: '2024-08-27T15:08:00', status: 'Fulfilled' },
-    { id: '103', medication: 'Metformin', type: 'Endocrinology', doctor: 'Dr. Esther Howard', date: '2024-08-21T15:08:00', status: 'Fulfilled' },
-];
-
-const MOCK_STATS: UserStats = {
-    fulfilledPrescriptions: 24,
-    nextAppointment: 1,
-    pendingActions: 3,
-};
-
-// Simulated API delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+// Helpers
+const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export const api = {
-    getDoctors: async (): Promise<Doctor[]> => {
-        await delay(800);
-        return MOCK_DOCTORS;
+    getDashboardData: async (): Promise<DashboardData> => {
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Generate dynamic stats
+        const stats: DashboardStat[] = [
+            { label: 'Total Patients', value: randomInt(10, 50), trend: -0.10, trendLabel: 'Since last week', icon: 'patients' },
+            { label: 'Total Doctors', value: randomInt(5, 20), trend: -0.10, trendLabel: 'Since last week', icon: 'doctors' },
+            { label: 'Pending Reviews', value: randomInt(0, 10), trend: -0.10, trendLabel: 'Since last week', icon: 'reviews' },
+            { label: 'Total Consultations', value: 0, trend: -0.10, trendLabel: 'Since last week', icon: 'consultations' },
+            { label: 'Prescriptions Issued', value: 0, trend: -0.10, trendLabel: 'Since last week', icon: 'prescriptions' },
+        ];
+
+        // Generate Charts Data
+        const consultationTrend = months.map(m => ({ label: m, value: randomInt(30, 80) }));
+        const prescriptionTrend = months.map(m => ({ label: m, value: randomInt(40, 90) }));
+        const doctorVsPatient = months.map(m => ({ label: m, value: randomInt(20, 70), value2: randomInt(40, 100) }));
+
+        const specialties = [
+            { label: 'Cardiology', value: 30 },
+            { label: 'Pediatrics', value: 45 },
+            { label: 'Surgery', value: 15 },
+            { label: 'Others', value: 10 },
+        ];
+
+        // Generate Recent Patients
+        const recentPatients: RecentPatient[] = Array.from({ length: 5 }).map((_, i) => ({
+            id: String(i + 1),
+            signUpDate: `2024-09-${randomInt(1, 30).toString().padStart(2, '0')}`,
+            name: ['Isagi Yoichi', 'Esther Howard', 'Jenny Wilson', 'Guy Hawkins', 'Jacob Jones'][i] || 'User Name',
+            email: ['isagi.yoichi@example.com', 'sara.cruz@example.com', 'felicia.reid@example.com', 'tanya.hill@example.com', 'jacob@example.com'][i],
+            phone: `(555) 555-010${i}`,
+            lastSeen: `2024-09-05 15:30:37`,
+            location: ['Lagos', 'Abuja', 'Sokoto', 'Kaduna', 'Ogun'][i],
+            device: i % 2 === 0 ? 'iOS' : 'Android',
+            status: 'Verified',
+        }));
+
+        return {
+            stats,
+            consultationTrend,
+            prescriptionTrend,
+            doctorVsPatient,
+            specialties,
+            recentPatients
+        };
     },
 
-    getPrescriptions: async (): Promise<Prescription[]> => {
-        await delay(1000); // Simulate slightly longer load
-        return MOCK_PRESCRIPTIONS;
-    },
-
-    getStats: async (): Promise<UserStats> => {
-        await delay(500);
-        return MOCK_STATS;
-    }
+    // Legacy mock methods
+    getDoctors: async (): Promise<Doctor[]> => [],
+    getPrescriptions: async (): Promise<Prescription[]> => [],
+    getStats: async (): Promise<UserStats> => ({ fulfilledPrescriptions: 0, nextAppointment: 0, pendingActions: 0 })
 };

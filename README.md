@@ -45,6 +45,9 @@ This project is a high-fidelity implementation of the iPrescribe landing page an
     -   Interactive Action Cards ("Consult with a Doctor", "Buy Drugs").
     -   Recent Prescriptions list with status indicators.
     -   Health Tips widget.
+-   **Authentication**:
+    -   **Login Page**: Fully implemented with **React Hook Form** for robust validation.
+    -   **Access**: Accepts **any valid email address and password** for demonstration purposes.
 -   **Bonus**:
     -   Skeleton loading states for better UX.
     -   Hover effects and transitions.
@@ -62,3 +65,4 @@ The application has been tested to ensure:
 -   No linting errors.
 -   Direct mappings to Figma layouts.
 -   Clean console output.
+-   Login flow verified with React Hook Form validation.

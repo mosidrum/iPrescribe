@@ -1,9 +1,8 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-// Colors derived from design
-const PRIMARY_BLUE = '#2E4C93'; // Approximate from "Join Waitlist"
-const PRIMARY_DARK = '#1C2B5C'; // Footer background
-const ACCENT_RED = '#E63946'; // Logo red (approx)
+const PRIMARY_BLUE = '#2E4C93';
+const PRIMARY_DARK = '#1C2B5C';
+const ACCENT_RED = '#E63946';
 const TEXT_DARK = '#1A1A1A';
 const TEXT_SECONDARY = '#666666';
 
@@ -56,7 +55,7 @@ let theme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: '50px', // Pill shape for main buttons
+                    borderRadius: '50px',
                     padding: '10px 24px',
                     boxShadow: 'none',
                     '&:hover': {

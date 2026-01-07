@@ -51,7 +51,10 @@ export const Navbar = () => {
                     </ListItem>
                 ))}
             </List>
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Button variant="outlined" fullWidth size="large" href="/login">
+                    Login
+                </Button>
                 <Button variant="contained" fullWidth size="large" onClick={handleDrawerToggle}>
                     Join Waitlist
                 </Button>
@@ -65,7 +68,6 @@ export const Navbar = () => {
                 <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
                     <Logo />
 
-                    {/* Desktop Nav */}
                     {!isMobile && (
                         <Stack direction="row" spacing={4} alignItems="center">
                             {NAV_LINKS.map((link) => (
@@ -82,12 +84,21 @@ export const Navbar = () => {
                         </Stack>
                     )}
 
-                    {/* Action Button & Mobile Toggle */}
-                    <Stack direction="row" spacing={1}>
+                    <Stack direction="row" spacing={1} alignItems="center">
                         {!isMobile && (
-                            <Button variant="contained" size="medium">
-                                Join Waitlist
-                            </Button>
+                            <>
+                                <Button
+                                    href="/login"
+                                    variant="text"
+                                    color="inherit"
+                                    sx={{ color: 'text.primary', fontWeight: 600 }}
+                                >
+                                    Login
+                                </Button>
+                                <Button variant="contained" size="medium">
+                                    Join Waitlist
+                                </Button>
+                            </>
                         )}
                         {isMobile && (
                             <IconButton
@@ -104,7 +115,6 @@ export const Navbar = () => {
                 </Toolbar>
             </Container>
 
-            {/* Mobile Drawer */}
             <Drawer
                 anchor="right"
                 open={mobileOpen}

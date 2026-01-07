@@ -1,47 +1,93 @@
 import { useQuery } from '@tanstack/react-query';
-import { Box, Container } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import { DashboardLayout } from '../components/dashboard/DashboardLayout';
-import { StatsSection } from '../components/dashboard/StatsSection';
-import { ServiceActions } from '../components/dashboard/ServiceActions';
-import { RecentPrescriptions } from '../components/dashboard/RecentPrescriptions';
-import { HealthTips } from '../components/dashboard/HealthTips';
+import { StatCard } from '../components/dashboard/StatCard';
+import { ChartWidget } from '../components/dashboard/Charts';
+import { RecentPatients } from '../components/dashboard/RecentPatients';
 import { api } from '../services/api';
 
 const DashboardPage = () => {
-    const { data: stats, isLoading: statsLoading } = useQuery({
-        queryKey: ['stats'],
-        queryFn: api.getStats
+    const { data, isLoading } = useQuery({
+        queryKey: ['dashboard-data'],
+        queryFn: api.getDashboardData
     });
 
-    const { data: prescriptions, isLoading: presLoading } = useQuery({
-        queryKey: ['prescriptions'],
-        queryFn: api.getPrescriptions
-    });
+    const stats = data?.stats || [];
 
     return (
         <DashboardLayout>
-            <Container maxWidth="md" disableGutters>
-                <Box sx={{ pb: 4 }}>
-                    {/* Stats Row */}
-                    <StatsSection
-                        fulfilled={stats?.fulfilledPrescriptions}
-                        appointment={stats?.nextAppointment}
-                        loading={statsLoading}
-                    />
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 
-                    {/* Service Actions */}
-                    <ServiceActions />
+                <Grid container spacing={3}>
+                    {isLoading ? (
+                        Array.from({ length: 5 }).map((_, i) => (
+                            <Grid size={{ xs: 12, sm: 6, md: 2.4 }} key={i}>
+                                <StatCard
+                                    label="Loading..."
+                                    value={0}
+                                    trend={0}
+                                    trendLabel=""
+                                    icon="default"
+                                    loading={true}
+                                />
+                            </Grid>
+                        ))
+                    ) : (
+                        stats.map((stat) => (
+                            <Grid size={{ xs: 12, sm: 6, md: 2.4 }} key={stat.label}>
+                                <StatCard
+                                    label={stat.label}
+                                    value={stat.value}
+                                    trend={stat.trend}
+                                    trendLabel={stat.trendLabel}
+                                    icon={stat.icon}
+                                />
+                            </Grid>
+                        ))
+                    )}
+                </Grid>
 
-                    {/* Recent Prescriptions */}
-                    <RecentPrescriptions
-                        data={prescriptions}
-                        isLoading={presLoading}
-                    />
+                <Grid container spacing={3}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <ChartWidget
+                            title="Consultation Over Time"
+                            type="line"
+                            data={data?.consultationTrend || []}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <ChartWidget
+                            title="Prescription Volume Trend"
+                            type="line"
+                            data={data?.prescriptionTrend || []}
+                        />
+                    </Grid>
+                </Grid>
 
-                    {/* Health Tips */}
-                    <HealthTips />
-                </Box>
-            </Container>
+                <Grid container spacing={3}>
+                    <Grid size={{ xs: 12, md: 8 }}>
+                        <ChartWidget
+                            title="Active Doctors vs Active Patients"
+                            type="bar"
+                            data={data?.doctorVsPatient || []}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                        <ChartWidget
+                            title="Top Specialties in Demand"
+                            type="donut"
+                            data={data?.specialties || []}
+                            legend={true}
+                        />
+                    </Grid>
+                </Grid>
+
+                <RecentPatients
+                    data={data?.recentPatients}
+                    isLoading={isLoading}
+                />
+
+            </Box>
         </DashboardLayout>
     );
 };
