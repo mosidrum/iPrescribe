@@ -1,7 +1,8 @@
-import { Box, Container, Typography, Stack, Avatar, AvatarGroup } from '@mui/material';
+import { Box, Container, Typography, Stack } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { StoreButton } from '../common/StoreButton';
 import heroImage from '../../assets/hero_phones.png';
+import avatars from '../../assets/Icon.svg';
 
 export const HeroSection = () => {
 
@@ -15,7 +16,6 @@ export const HeroSection = () => {
             <Container>
                 <Stack direction={{ xs: 'column', md: 'row' }} alignItems="center" spacing={4}>
 
-                    {/* Left Content */}
                     <Box flex={1} textAlign={{ xs: 'center', md: 'left' }}>
 
                         {/* Badge */}
@@ -31,11 +31,12 @@ export const HeroSection = () => {
                                 border: '1px solid #E6E8F0'
                             }}
                         >
-                            <AvatarGroup max={3} sx={{ mr: 1.5, '& .MuiAvatar-root': { width: 24, height: 24, fontSize: 10 } }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                            </AvatarGroup>
+                            <Box
+                              component="img"
+                              src={avatars}
+                              alt="iPrescribe App Screens"
+                              sx={{ mr: 1.5, '& .MuiAvatar-root': { width: 24, height: 24, fontSize: 10 } }}
+                              />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500, mr: 1 }}>
                                 Ready to explore iPrescribe?
                             </Typography>
@@ -44,7 +45,7 @@ export const HeroSection = () => {
                             </Typography>
                         </Box>
 
-                        <Typography variant="h1" color="text.primary" sx={{ mb: 2, letterSpacing: '-1px' }}>
+                        <Typography variant="h1" fontWeight={400} color="text.primary" sx={{ mb: 2, letterSpacing: '-1px' }}>
                             Your Bridge <br />
                             Between Care & <br />
                             Convenience
@@ -65,9 +66,7 @@ export const HeroSection = () => {
                         </Stack>
                     </Box>
 
-                    {/* Right Image */}
                     <Box flex={1} sx={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
-                        {/* Decorative Elements behind if needed */}
                         <Box
                             component="img"
                             src={heroImage}
