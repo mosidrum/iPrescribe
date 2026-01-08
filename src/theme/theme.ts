@@ -1,20 +1,79 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-const PRIMARY_BLUE = '#2E4C93';
-const PRIMARY_DARK = '#1C2B5C';
-const ACCENT_RED = '#E63946';
+export const palette = {
+    primary: {
+        main: '#283C85',
+        dark: '#1C2B5C',
+        light: '#2E4C93',
+        contrastText: '#ffffff',
+    },
+    secondary: {
+        main: '#E63946',
+    },
+    background: {
+        light: {
+            default: '#ffffff',
+            paper: '#ffffff',
+        },
+        dark: {
+            default: '#000000',
+            paper: '#111111',
+        },
+    },
+    text: {
+        light: {
+            primary: '#1A1A1A',
+            secondary: '#666666',
+        },
+        dark: {
+            primary: '#ffffff',
+            secondary: '#A0A0A0',
+        },
+    },
+    ui: {
+        sidebarBg: '#283C85',
+        footerBg: '#283C85',
+        loginBg: '#283C85',
+        buttonBg: '#283C85',
+        logoutRed: '#FF6B6B',
+        divider: 'rgba(255,255,255,0.05)',
+        dividerLight: '#EAECF0',
+    },
+    chart: {
+        blue: '#2E90FA',
+        green: '#12B76A',
+        orange: '#F79009',
+        red: '#F04438',
+    },
+    status: {
+        verified: {
+            bg: '#ECFDF3',
+            bgDark: '#064E3B',
+            text: '#027A48',
+            textDark: '#6EE7B7',
+        },
+        pending: {
+            bg: '#F2F4F7',
+            text: '#344054',
+        },
+    },
+};
 
-// Light Mode Colors
-const LIGHT_BG_DEFAULT = '#ffffff';
-const LIGHT_BG_PAPER = '#ffffff';
-const LIGHT_TEXT_PRIMARY = '#1A1A1A';
-const LIGHT_TEXT_SECONDARY = '#666666';
+export const spacing = {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
+};
 
-// Dark Mode Colors
-const DARK_BG_DEFAULT = '#000000';
-const DARK_BG_PAPER = '#111111'; // Slightly lighter for cards to distinguish from pure black bg
-const DARK_TEXT_PRIMARY = '#ffffff';
-const DARK_TEXT_SECONDARY = '#A0A0A0';
+export const borderRadius = {
+    small: 4,
+    medium: 8,
+    large: 12,
+    pill: 50,
+};
 
 export const getTheme = (mode: 'light' | 'dark', fontFamily: string = 'Montserrat') => {
     const isDark = mode === 'dark';
@@ -23,20 +82,21 @@ export const getTheme = (mode: 'light' | 'dark', fontFamily: string = 'Montserra
         palette: {
             mode,
             primary: {
-                main: PRIMARY_BLUE,
-                dark: PRIMARY_DARK,
-                contrastText: '#ffffff',
+                main: palette.primary.main,
+                dark: palette.primary.dark,
+                light: palette.primary.light,
+                contrastText: palette.primary.contrastText,
             },
             secondary: {
-                main: ACCENT_RED,
+                main: palette.secondary.main,
             },
             background: {
-                default: isDark ? DARK_BG_DEFAULT : LIGHT_BG_DEFAULT,
-                paper: isDark ? DARK_BG_PAPER : LIGHT_BG_PAPER,
+                default: isDark ? palette.background.dark.default : palette.background.light.default,
+                paper: isDark ? palette.background.dark.paper : palette.background.light.paper,
             },
             text: {
-                primary: isDark ? DARK_TEXT_PRIMARY : LIGHT_TEXT_PRIMARY,
-                secondary: isDark ? DARK_TEXT_SECONDARY : LIGHT_TEXT_SECONDARY,
+                primary: isDark ? palette.text.dark.primary : palette.text.light.primary,
+                secondary: isDark ? palette.text.dark.secondary : palette.text.light.secondary,
             },
         },
         typography: {
@@ -63,21 +123,49 @@ export const getTheme = (mode: 'light' | 'dark', fontFamily: string = 'Montserra
             },
         },
         shape: {
-            borderRadius: 12,
+            borderRadius: borderRadius.large,
         },
         components: {
             MuiButton: {
                 styleOverrides: {
                     root: {
-                        borderRadius: '50px',
+                        borderRadius: borderRadius.pill,
                         padding: '10px 24px',
                         boxShadow: 'none',
                         '&:hover': {
-                            boxShadow: '0px 4px 12px rgba(0,0,0,0.15)',
+                            boxShadow: 'none',
                         },
                     },
                     containedPrimary: {
-                        background: PRIMARY_BLUE,
+                        background: palette.primary.main,
+                        '&:hover': {
+                            background: palette.primary.dark,
+                            boxShadow: 'none',
+                        },
+                    },
+                    text: {
+                        '&:hover': {
+                            boxShadow: 'none',
+                            backgroundColor: 'transparent',
+                        },
+                    },
+                },
+            },
+            MuiIconButton: {
+                styleOverrides: {
+                    root: {
+                        '&:hover': {
+                            boxShadow: 'none',
+                        },
+                    },
+                },
+            },
+            MuiListItemButton: {
+                styleOverrides: {
+                    root: {
+                        '&:hover': {
+                            boxShadow: 'none',
+                        },
                     },
                 },
             },
@@ -89,10 +177,10 @@ export const getTheme = (mode: 'light' | 'dark', fontFamily: string = 'Montserra
             MuiPaper: {
                 styleOverrides: {
                     root: {
-                        backgroundImage: 'none', // Disable default MUI overlay in dark mode
-                    }
-                }
-            }
+                        backgroundImage: 'none',
+                    },
+                },
+            },
         },
     });
 
@@ -100,5 +188,4 @@ export const getTheme = (mode: 'light' | 'dark', fontFamily: string = 'Montserra
     return theme;
 };
 
-// Default export for backward compatibility if needed, though we should switch to named exports
 export default getTheme('light', 'Inter');

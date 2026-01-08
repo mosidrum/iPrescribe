@@ -1,14 +1,15 @@
-import { type ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@mui/material';
+import { ThemeProvider, CssBaseline, Box, CircularProgress } from '@mui/material';
 
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
 import { PublicLayout } from './components/layout/PublicLayout';
-
 import { useThemeStore } from './store/useThemeStore';
 import { getTheme } from './theme/theme';
+
+// Lazy load pages for performance optimization
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 
 type ThemeWrapperProps = {
   mode: 'light' | 'dark';
@@ -26,6 +27,12 @@ const ThemeWrapper = ({ mode, font, children }: ThemeWrapperProps) => {
     </ThemeProvider>
   );
 };
+
+const PageLoader = () => (
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <CircularProgress />
+  </Box>
+);
 
 type RouteConfig = {
   path: string;
@@ -63,28 +70,30 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        {routes.map(({ path, component, theme, layout }) => {
-          const resolvedMode =
-            theme.mode === 'dynamic' ? mode : theme.mode;
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {routes.map(({ path, component, theme, layout }) => {
+            const resolvedMode =
+              theme.mode === 'dynamic' ? mode : theme.mode;
 
-          const content = layout === 'public'
-            ? <PublicLayout>{component}</PublicLayout>
-            : component;
+            const content = layout === 'public'
+              ? <PublicLayout>{component}</PublicLayout>
+              : component;
 
-          return (
-            <Route
-              key={path}
-              path={path}
-              element={
-                <ThemeWrapper mode={resolvedMode} font={theme.font}>
-                  {content}
-                </ThemeWrapper>
-              }
-            />
-          );
-        })}
-      </Routes>
+            return (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <ThemeWrapper mode={resolvedMode} font={theme.font}>
+                    {content}
+                  </ThemeWrapper>
+                }
+              />
+            );
+          })}
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

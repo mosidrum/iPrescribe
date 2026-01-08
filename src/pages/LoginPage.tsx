@@ -16,6 +16,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useAuthStore } from '../store/useAuthStore';
 import { Logo } from '../components/common/Logo';
+import { palette } from '../theme/theme';
 
 interface LoginFormInputs {
     email: string;
@@ -26,7 +27,6 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const login = useAuthStore((state) => state.login);
 
-    // React Hook Form setup
     const {
         register,
         handleSubmit,
@@ -42,9 +42,7 @@ const LoginPage = () => {
         setLoading(true);
 
         try {
-            // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 1500));
-
             login(data.email);
             navigate('/dashboard');
         } catch (err) {
@@ -58,8 +56,8 @@ const LoginPage = () => {
         <Box
             sx={{
                 flex: 1,
-                bgcolor: '#1C2B5C', // Dark blue background
-                backgroundImage: 'linear-gradient(rgba(28, 43, 92, 0.95), rgba(28, 43, 92, 0.95)), url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                bgcolor: palette.ui.loginBg,
+                backgroundImage: `linear-gradient(rgba(40, 60, 133, 0.95), rgba(40, 60, 133, 0.95)), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -158,7 +156,10 @@ const LoginPage = () => {
                                 sx={{
                                     textTransform: 'none',
                                     color: 'text.secondary',
-                                    fontWeight: 500
+                                    fontWeight: 500,
+                                    '&:hover': {
+                                        boxShadow: 'none',
+                                    }
                                 }}
                             >
                                 Forgot password?

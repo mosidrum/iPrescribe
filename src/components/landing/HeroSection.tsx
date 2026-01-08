@@ -5,7 +5,6 @@ import heroImage from '../../assets/hero_phones.png';
 import avatars from '../../assets/Icon.svg';
 
 export const HeroSection = () => {
-
     return (
         <Box sx={{
             background: 'linear-gradient(180deg, #FFFFFF 0%, #F0F4FC 100%)',
@@ -18,7 +17,6 @@ export const HeroSection = () => {
 
                     <Box flex={1} textAlign={{ xs: 'center', md: 'left' }}>
 
-                        {/* Badge */}
                         <Box
                             sx={{
                                 display: 'inline-flex',
@@ -32,11 +30,11 @@ export const HeroSection = () => {
                             }}
                         >
                             <Box
-                              component="img"
-                              src={avatars}
-                              alt="iPrescribe App Screens"
-                              sx={{ mr: 1.5, '& .MuiAvatar-root': { width: 24, height: 24, fontSize: 10 } }}
-                              />
+                                component="img"
+                                src={avatars}
+                                alt="iPrescribe App Screens"
+                                sx={{ mr: 1.5, '& .MuiAvatar-root': { width: 24, height: 24, fontSize: 10 } }}
+                            />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500, mr: 1 }}>
                                 Ready to explore iPrescribe?
                             </Typography>

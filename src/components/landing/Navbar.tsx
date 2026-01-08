@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo, useCallback } from 'react';
 import {
     AppBar,
     Toolbar,
@@ -21,41 +21,54 @@ import { Logo } from '../common/Logo';
 
 const NAV_LINKS = [
     { label: 'Home', href: '/' },
-    { label: 'Features', href: '/' },
-    { label: 'Contact us', href: '/' },
+    { label: 'Features', href: '#' },
+    { label: 'Contact us', href: '#' },
 ];
 
-export const Navbar = () => {
+export const Navbar = memo(() => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+    const handleDrawerToggle = useCallback(() => {
+        setMobileOpen(prev => !prev);
+    }, []);
 
     const drawer = (
         <Box sx={{ p: 2, height: '100%', bgcolor: 'background.default' }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
                 <Logo />
-                <IconButton onClick={handleDrawerToggle}>
+                <IconButton onClick={handleDrawerToggle} disableRipple>
                     <CloseIcon />
                 </IconButton>
             </Stack>
             <List>
                 {NAV_LINKS.map((item) => (
                     <ListItem key={item.label} disablePadding>
-                        <ListItemButton href={item.href} onClick={handleDrawerToggle}>
+                        <ListItemButton
+                            href={item.href}
+                            onClick={handleDrawerToggle}
+                            disableRipple
+                            sx={{
+                                '&:hover': {
+                                    boxShadow: 'none',
+                                    bgcolor: 'transparent'
+                                },
+                                '&:active': {
+                                    bgcolor: 'transparent'
+                                }
+                            }}
+                        >
                             <ListItemText primary={item.label} />
                         </ListItemButton>
                     </ListItem>
                 ))}
             </List>
             <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Button variant="outlined" fullWidth size="large" href="/login">
+                <Button variant="outlined" fullWidth size="large" href="/login" disableRipple>
                     Login
                 </Button>
-                <Button variant="contained" fullWidth size="large" onClick={handleDrawerToggle}>
+                <Button variant="contained" fullWidth size="large" onClick={handleDrawerToggle} disableRipple>
                     Join Waitlist
                 </Button>
             </Box>
@@ -76,7 +89,19 @@ export const Navbar = () => {
                                     href={link.href}
                                     variant="text"
                                     color="inherit"
-                                    sx={{ color: 'text.secondary', fontWeight: 500 }}
+                                    disableRipple
+                                    sx={{
+                                        color: 'text.secondary',
+                                        fontWeight: 500,
+                                        '&:hover': {
+                                            boxShadow: 'none',
+                                            backgroundColor: 'transparent',
+                                            color: 'primary.main'
+                                        },
+                                        '&:active': {
+                                            backgroundColor: 'transparent'
+                                        }
+                                    }}
                                 >
                                     {link.label}
                                 </Button>
@@ -91,11 +116,23 @@ export const Navbar = () => {
                                     href="/login"
                                     variant="text"
                                     color="inherit"
-                                    sx={{ color: 'text.primary', fontWeight: 600 }}
+                                    disableRipple
+                                    sx={{
+                                        color: 'text.primary',
+                                        fontWeight: 600,
+                                        '&:hover': {
+                                            boxShadow: 'none',
+                                            backgroundColor: 'transparent',
+                                            color: 'primary.main'
+                                        },
+                                        '&:active': {
+                                            backgroundColor: 'transparent'
+                                        }
+                                    }}
                                 >
                                     Login
                                 </Button>
-                                <Button variant="contained" size="medium">
+                                <Button variant="contained" size="medium" disableRipple>
                                     Join Waitlist
                                 </Button>
                             </>
@@ -106,7 +143,8 @@ export const Navbar = () => {
                                 aria-label="open drawer"
                                 edge="end"
                                 onClick={handleDrawerToggle}
-                                sx={{ bgcolor: 'rgba(46, 76, 147, 0.1)' }}
+                                disableRipple
+                                sx={{ bgcolor: 'rgba(40, 60, 133, 0.1)' }}
                             >
                                 <MenuIcon />
                             </IconButton>
@@ -121,10 +159,9 @@ export const Navbar = () => {
                 onClose={handleDrawerToggle}
                 ModalProps={{ keepMounted: true }}
                 PaperProps={{ sx: { width: '80%', maxWidth: 300 } }}
-
             >
                 {drawer}
             </Drawer>
         </AppBar>
     );
-};
+});

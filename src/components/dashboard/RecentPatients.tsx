@@ -15,6 +15,7 @@ import {
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import type { RecentPatient } from '../../types';
 import { useDashboardStore } from '../../store/useDashboardStore';
+import { palette } from '../../theme/theme';
 
 interface RecentPatientsProps {
     data: RecentPatient[] | undefined;
@@ -36,12 +37,12 @@ export const RecentPatients = ({ data, isLoading }: RecentPatientsProps) => {
             sx={{
                 p: 0,
                 borderRadius: 3,
-                border: isDark ? '1px solid #333' : '1px solid #EAECF0',
+                border: isDark ? '1px solid #333' : `1px solid ${palette.ui.dividerLight}`,
                 overflow: 'hidden',
                 bgcolor: 'background.paper'
             }}
         >
-            <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: isDark ? '1px solid #333' : '1px solid #EAECF0' }}>
+            <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: isDark ? '1px solid #333' : `1px solid ${palette.ui.dividerLight}` }}>
                 <Typography variant="h6" fontWeight={600} sx={{ fontFamily: 'Montserrat' }}>
                     Recent Patients Sign Up
                 </Typography>
@@ -49,7 +50,14 @@ export const RecentPatients = ({ data, isLoading }: RecentPatientsProps) => {
                     <Button
                         onClick={handleSeeAll}
                         endIcon={<ArrowForwardIosIcon sx={{ fontSize: '12px !important' }} />}
-                        sx={{ textTransform: 'none', color: 'text.secondary', fontWeight: 500 }}
+                        sx={{
+                            textTransform: 'none',
+                            color: 'text.secondary',
+                            fontWeight: 500,
+                            '&:hover': {
+                                boxShadow: 'none',
+                            }
+                        }}
                     >
                         See All
                     </Button>
@@ -96,8 +104,8 @@ export const RecentPatients = ({ data, isLoading }: RecentPatientsProps) => {
                                             label={row.status}
                                             size="small"
                                             sx={{
-                                                bgcolor: row.status === 'Verified' ? (isDark ? '#064E3B' : '#ECFDF3') : '#F2F4F7',
-                                                color: row.status === 'Verified' ? (isDark ? '#6EE7B7' : '#027A48') : '#344054',
+                                                bgcolor: row.status === 'Verified' ? (isDark ? palette.status.verified.bgDark : palette.status.verified.bg) : palette.status.pending.bg,
+                                                color: row.status === 'Verified' ? (isDark ? palette.status.verified.textDark : palette.status.verified.text) : palette.status.pending.text,
                                                 fontWeight: 500,
                                                 borderRadius: '6px'
                                             }}

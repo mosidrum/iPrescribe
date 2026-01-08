@@ -1,6 +1,6 @@
 import { Button, Box, Typography } from '@mui/material';
 import AppleIcon from '@mui/icons-material/Apple';
-import GoogleIcon from '@mui/icons-material/Android'; // Fallback for Google Play
+import playstoreIcon from '../../assets/playstore.png';
 
 interface StoreButtonProps {
     store: 'apple' | 'google';
@@ -8,7 +8,6 @@ interface StoreButtonProps {
 
 export const StoreButton = ({ store }: StoreButtonProps) => {
     const isApple = store === 'apple';
-    const Icon = isApple ? AppleIcon : GoogleIcon;
     const label = isApple ? 'App Store' : 'Google Play';
     const subtitle = 'Coming Soon';
 
@@ -16,7 +15,18 @@ export const StoreButton = ({ store }: StoreButtonProps) => {
         <Button
             variant="contained"
             color="inherit"
-            startIcon={<Icon sx={{ fontSize: 30 }} />}
+            startIcon={
+                isApple ? (
+                    <AppleIcon sx={{ fontSize: 30 }} />
+                ) : (
+                    <Box
+                        component="img"
+                        src={playstoreIcon}
+                        alt="Google Play"
+                        sx={{ width: 24, height: 24 }}
+                    />
+                )
+            }
             sx={{
                 bgcolor: '#1A1A1A',
                 color: '#fff',
@@ -26,6 +36,7 @@ export const StoreButton = ({ store }: StoreButtonProps) => {
                 borderRadius: '12px',
                 '&:hover': {
                     bgcolor: '#333',
+                    boxShadow: 'none',
                 },
                 minWidth: 160,
                 height: 56

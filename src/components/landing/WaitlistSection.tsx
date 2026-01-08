@@ -2,7 +2,6 @@ import { Box, Container, Typography, TextField, Button } from '@mui/material';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 
 export const WaitlistSection = () => {
-
     return (
         <Box sx={{ bgcolor: 'primary.main', py: 10, color: 'white', overflow: 'hidden' }}>
             <Container maxWidth="md" sx={{ textAlign: 'center' }}>
@@ -50,7 +49,8 @@ export const WaitlistSection = () => {
                             py: 1.5,
                             fontWeight: 700,
                             '&:hover': {
-                                bgcolor: '#f0f0f0'
+                                bgcolor: '#f0f0f0',
+                                boxShadow: 'none',
                             }
                         }}
                     >
