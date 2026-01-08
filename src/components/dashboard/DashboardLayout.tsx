@@ -1,6 +1,6 @@
 import { Box, useTheme, useMediaQuery } from '@mui/material';
 import { Sidebar } from './Sidebar';
-import { TopBar } from './TopBar';
+import { TopBar } from "./Topbar";
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -12,7 +12,6 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
     return (
         <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-            {/* Sidebar */}
             {!isMobile && <Sidebar />}
 
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
@@ -23,8 +22,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     sx={{
                         flexGrow: 1,
                         p: 3,
-                        mt: 8, // Approx TopBar height
-                        ml: { md: '280px' }, // Offset for Sidebar
+                        mt: 8,
+                        ml: { md: '280px' },
                         overflowX: 'hidden'
                     }}
                 >

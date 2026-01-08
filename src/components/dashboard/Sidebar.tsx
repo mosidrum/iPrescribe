@@ -1,3 +1,4 @@
+import { memo, useCallback } from 'react';
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
@@ -14,6 +15,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '../common/Logo';
 import { useAuthStore } from '../../store/useAuthStore';
+import { palette } from '../../theme/theme';
 
 const MAIN_MENU = [
     { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', active: true },
@@ -32,29 +34,27 @@ const ADMIN_MENU = [
     { label: 'Website Updates', icon: <WebIcon />, path: '/website' },
 ];
 
-
-
-export const Sidebar = () => {
+export const Sidebar = memo(() => {
     const logout = useAuthStore((state) => state.logout);
     const navigate = useNavigate();
 
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         logout();
         navigate('/login');
-    };
+    }, [logout, navigate]);
 
     return (
         <Box
             sx={{
                 width: 280,
-                bgcolor: '#141E3C', // Deep dark blue from design
-                color: '#fff',
+                bgcolor: palette.ui.sidebarBg,
+                color: palette.primary.contrastText,
                 height: '100vh',
                 position: 'fixed',
                 left: 0,
                 top: 0,
                 overflowY: 'auto',
-                borderRight: '1px solid rgba(255,255,255,0.05)',
+                borderRight: `1px solid ${palette.ui.divider}`,
                 display: 'flex',
                 flexDirection: 'column'
             }}
@@ -71,19 +71,31 @@ export const Sidebar = () => {
                     {MAIN_MENU.map((item) => (
                         <ListItem key={item.label} disablePadding sx={{ mb: 0.5 }}>
                             <ListItemButton
+                                disableRipple
                                 selected={item.active}
                                 sx={{
                                     borderRadius: 1,
                                     py: 1.5,
-                                    bgcolor: item.active ? '#fff' : 'transparent',
-                                    color: item.active ? '#2E4C93' : '#fff',
+                                    bgcolor: item.active ? palette.primary.contrastText : 'transparent',
+                                    color: item.active ? palette.primary.main : palette.primary.contrastText,
                                     '&:hover': {
-                                        bgcolor: item.active ? '#fff' : 'rgba(255,255,255,0.05)',
+                                        bgcolor: item.active ? palette.primary.contrastText : 'rgba(255,255,255,0.05)',
+                                        boxShadow: 'none',
+                                    },
+                                    '&.Mui-focusVisible': {
+                                        bgcolor: item.active ? palette.primary.contrastText : 'transparent',
+                                        boxShadow: 'none',
+                                    },
+                                    '&:active': {
+                                        bgcolor: item.active ? palette.primary.contrastText : 'transparent',
+                                        boxShadow: 'none',
                                     },
                                     '&.Mui-selected': {
-                                        bgcolor: '#fff',
-                                        color: '#141E3C', // Inverted logic for active state
-                                        '&:hover': { bgcolor: '#fff' }
+                                        bgcolor: palette.primary.contrastText,
+                                        color: palette.primary.main,
+                                        '&:hover': { bgcolor: palette.primary.contrastText },
+                                        '&.Mui-focusVisible': { bgcolor: palette.primary.contrastText, boxShadow: 'none' },
+                                        '&:active': { bgcolor: palette.primary.contrastText, boxShadow: 'none' }
                                     }
                                 }}
                             >
@@ -106,12 +118,22 @@ export const Sidebar = () => {
                     {ADMIN_MENU.map((item) => (
                         <ListItem key={item.label} disablePadding sx={{ mb: 0.5 }}>
                             <ListItemButton
+                                disableRipple
                                 sx={{
                                     borderRadius: 1,
                                     py: 1.5,
-                                    color: '#fff',
+                                    color: palette.primary.contrastText,
                                     '&:hover': {
                                         bgcolor: 'rgba(255,255,255,0.05)',
+                                        boxShadow: 'none',
+                                    },
+                                    '&.Mui-focusVisible': {
+                                        bgcolor: 'transparent',
+                                        boxShadow: 'none',
+                                    },
+                                    '&:active': {
+                                        bgcolor: 'transparent',
+                                        boxShadow: 'none',
                                     }
                                 }}
                             >
@@ -128,16 +150,25 @@ export const Sidebar = () => {
                 </List>
             </Box>
 
-            {/* Logout Section */}
-            <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <Box sx={{ p: 2, borderTop: `1px solid ${palette.ui.divider}` }}>
                 <ListItemButton
+                    disableRipple
                     onClick={handleLogout}
                     sx={{
                         borderRadius: 1,
                         py: 1.5,
-                        color: '#FF6B6B', // Light red for logout
+                        color: palette.ui.logoutRed,
                         '&:hover': {
                             bgcolor: 'rgba(255, 107, 107, 0.1)',
+                            boxShadow: 'none',
+                        },
+                        '&.Mui-focusVisible': {
+                            bgcolor: 'transparent',
+                            boxShadow: 'none',
+                        },
+                        '&:active': {
+                            bgcolor: 'transparent',
+                            boxShadow: 'none',
                         }
                     }}
                 >
@@ -152,4 +183,4 @@ export const Sidebar = () => {
             </Box>
         </Box>
     );
-};
+});

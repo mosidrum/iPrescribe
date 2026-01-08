@@ -6,6 +6,7 @@ import { ChartWidget } from '../components/dashboard/Charts';
 import { RecentPatients } from '../components/dashboard/RecentPatients';
 import { api } from '../services/api';
 import { useDashboardStore } from '../store/useDashboardStore';
+import { palette } from '../theme/theme';
 
 const DashboardPage = () => {
     const { limit, dateRange } = useDashboardStore();
@@ -13,7 +14,7 @@ const DashboardPage = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['dashboard-data', limit, dateRange],
         queryFn: () => api.getDashboardData(limit),
-        staleTime: 0, // Ensure fresh data on param change if desired, though queryKey handles it
+        staleTime: 0,
     });
 
     const stats = data?.stats || [];
@@ -57,7 +58,7 @@ const DashboardPage = () => {
                             title="Consultation Over Time"
                             type="line"
                             data={data?.consultationTrend || []}
-                            color="#2E90FA"
+                            color={palette.chart.blue}
                             label="Consultations"
                         />
                     </Grid>
@@ -66,7 +67,7 @@ const DashboardPage = () => {
                             title="Prescription Volume Trend"
                             type="line"
                             data={data?.prescriptionTrend || []}
-                            color="#12B76A"
+                            color={palette.chart.green}
                             label="Prescriptions"
                         />
                     </Grid>
@@ -90,7 +91,6 @@ const DashboardPage = () => {
                     </Grid>
                 </Grid>
 
-                {/* Recent Patients Table */}
                 <RecentPatients
                     data={data?.recentPatients}
                     isLoading={isLoading}

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Box, Paper, Typography, Stack, useTheme } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
@@ -15,7 +16,7 @@ import {
     type ChartOptions
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
-
+import { palette } from '../../theme/theme';
 
 ChartJS.register(
     CategoryScale,
@@ -30,7 +31,6 @@ ChartJS.register(
     Filler
 );
 
-// Common Chart Options
 const commonOptions: ChartOptions<any> = {
     responsive: true,
     maintainAspectRatio: false,
@@ -39,9 +39,9 @@ const commonOptions: ChartOptions<any> = {
             display: false,
         },
         tooltip: {
-            backgroundColor: '#1C2B5C',
-            titleColor: '#fff',
-            bodyColor: '#fff',
+            backgroundColor: palette.primary.dark,
+            titleColor: palette.primary.contrastText,
+            bodyColor: palette.primary.contrastText,
             padding: 12,
             cornerRadius: 8,
             displayColors: false,
@@ -88,7 +88,7 @@ const commonOptions: ChartOptions<any> = {
     }
 };
 
-export const LineChart = ({ data, color = '#2E90FA', label = 'Value' }: { data: { label: string; value: number }[]; color?: string; label?: string }) => {
+export const LineChart = memo(({ data, color = palette.chart.blue, label = 'Value' }: { data: { label: string; value: number }[]; color?: string; label?: string }) => {
     const chartData = {
         labels: data.map(d => d.label),
         datasets: [
@@ -105,7 +105,7 @@ export const LineChart = ({ data, color = '#2E90FA', label = 'Value' }: { data: 
                 },
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#fff',
+                pointBackgroundColor: palette.primary.contrastText,
                 pointBorderColor: color,
                 pointBorderWidth: 2,
                 pointRadius: 4,
@@ -119,23 +119,23 @@ export const LineChart = ({ data, color = '#2E90FA', label = 'Value' }: { data: 
             <Line options={commonOptions} data={chartData} />
         </Box>
     );
-};
+});
 
-export const BarChart = ({ data }: { data: { label: string; value: number; value2?: number }[] }) => {
+export const BarChart = memo(({ data }: { data: { label: string; value: number; value2?: number }[] }) => {
     const chartData = {
         labels: data.map(d => d.label),
         datasets: [
             {
                 label: 'Doctors',
                 data: data.map(d => d.value),
-                backgroundColor: '#F79009',
+                backgroundColor: palette.chart.orange,
                 borderRadius: 4,
                 barThickness: 6,
             },
             {
                 label: 'Patients',
                 data: data.map(d => d.value2),
-                backgroundColor: '#2E90FA',
+                backgroundColor: palette.chart.blue,
                 borderRadius: 4,
                 barThickness: 6,
             },
@@ -147,9 +147,9 @@ export const BarChart = ({ data }: { data: { label: string; value: number; value
             <Bar options={commonOptions} data={chartData} />
         </Box>
     );
-};
+});
 
-export const DonutChart = ({ data }: { data: { label: string; value: number }[] }) => {
+export const DonutChart = memo(({ data }: { data: { label: string; value: number }[] }) => {
     const total = data.reduce((acc, current) => acc + current.value, 0);
     const maxVal = Math.max(...data.map(d => d.value));
     const percentage = total > 0 ? Math.round((maxVal / total) * 100) : 0;
@@ -158,15 +158,13 @@ export const DonutChart = ({ data }: { data: { label: string; value: number }[] 
         datasets: [
             {
                 data: data.map(d => d.value),
-                backgroundColor: ['#F04438', '#F79009', '#12B76A', '#2E90FA'],
+                backgroundColor: [palette.chart.red, palette.chart.orange, palette.chart.green, palette.chart.blue],
                 borderWidth: 0,
                 cutout: '75%',
             },
         ],
     };
 
-    // Access center text via plugin or just overlay
-    // For simplicity, using overlay in JSX as before
     const options: any = {
         ...commonOptions,
         scales: {
@@ -189,18 +187,18 @@ export const DonutChart = ({ data }: { data: { label: string; value: number }[] 
             </Box>
         </Box>
     );
-};
+});
 
 interface ChartWidgetProps {
     title: string;
     type: 'line' | 'bar' | 'donut';
     data: any;
     legend?: boolean;
-    color?: string; // For line chart color override
-    label?: string; // For tooltip label
+    color?: string;
+    label?: string;
 }
 
-export const ChartWidget = ({ title, type, data, legend, color, label }: ChartWidgetProps) => {
+export const ChartWidget = memo(({ title, type, data, legend, color, label }: ChartWidgetProps) => {
     const theme = useTheme();
     const isDark = theme.palette.mode === 'dark';
 
@@ -210,7 +208,7 @@ export const ChartWidget = ({ title, type, data, legend, color, label }: ChartWi
             sx={{
                 p: 3,
                 borderRadius: 3,
-                border: isDark ? '1px solid #333' : '1px solid #EAECF0',
+                border: isDark ? '1px solid #333' : `1px solid ${palette.ui.dividerLight}`,
                 height: '100%',
                 bgcolor: 'background.paper',
                 transition: 'all 0.3s ease'
@@ -232,7 +230,7 @@ export const ChartWidget = ({ title, type, data, legend, color, label }: ChartWi
                         <Stack spacing={2} sx={{ minWidth: 100 }}>
                             {data.map((d: any, i: number) => (
                                 <Stack key={d.label} direction="row" spacing={1} alignItems="center">
-                                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: ['#F04438', '#F79009', '#12B76A', '#2E90FA'][i] }} />
+                                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: [palette.chart.red, palette.chart.orange, palette.chart.green, palette.chart.blue][i] }} />
                                     <Box>
                                         <Typography variant="caption" color="text.secondary" display="block">{d.label}</Typography>
                                         <Typography variant="subtitle2" fontWeight={700}>{d.value}</Typography>
@@ -245,4 +243,4 @@ export const ChartWidget = ({ title, type, data, legend, color, label }: ChartWi
             )}
         </Paper>
     );
-};
+});

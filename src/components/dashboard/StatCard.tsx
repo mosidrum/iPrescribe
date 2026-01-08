@@ -6,11 +6,12 @@ import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import StarIcon from '@mui/icons-material/Star';
 import MedicationIcon from '@mui/icons-material/Medication';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import { palette } from '../../theme/theme';
 
 const ICONS = {
-    patients: { icon: PeopleIcon, color: '#EBF5FF', iconColor: '#2E90FA' },
-    doctors: { icon: LocalHospitalIcon, color: '#ECFDF3', iconColor: '#027A48' },
-    reviews: { icon: StarIcon, color: '#FFF9EB', iconColor: '#F79009' },
+    patients: { icon: PeopleIcon, color: '#EBF5FF', iconColor: palette.chart.blue },
+    doctors: { icon: LocalHospitalIcon, color: '#ECFDF3', iconColor: palette.status.verified.text },
+    reviews: { icon: StarIcon, color: '#FFF9EB', iconColor: palette.chart.orange },
     consultations: { icon: EventAvailableIcon, color: '#F2F4F7', iconColor: '#344054' },
     prescriptions: { icon: MedicationIcon, color: '#FEF3F2', iconColor: '#B42318' },
     default: { icon: PeopleIcon, color: '#F2F4F7', iconColor: '#344054' },
@@ -33,7 +34,7 @@ export const StatCard = ({ label, value, trend, trendLabel, icon, loading }: Sta
 
     if (loading) {
         return (
-            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, bgcolor: 'background.paper', height: '100%' }}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 1, bgcolor: 'background.paper', height: '100%' }}>
                 <Stack direction="row" justifyContent="space-between" mb={2}>
                     <Skeleton variant="text" width="60%" />
                     <Skeleton variant="circular" width={40} height={40} />
@@ -49,9 +50,8 @@ export const StatCard = ({ label, value, trend, trendLabel, icon, loading }: Sta
             elevation={0}
             sx={{
                 p: 2.5,
-                borderRadius: 3,
                 bgcolor: 'background.paper',
-                border: isDark ? '1px solid #333' : '1px solid #EAECF0',
+                border: isDark ? '1px solid #333' : `1px solid ${palette.ui.dividerLight}`,
                 height: '100%'
             }}
         >
@@ -60,7 +60,7 @@ export const StatCard = ({ label, value, trend, trendLabel, icon, loading }: Sta
                     {label}
                 </Typography>
                 <Box sx={{
-                    bgcolor: isDark ? `${iconConfig.color}20` : iconConfig.color, // Dim background in dark mode
+                    bgcolor: isDark ? `${iconConfig.color}20` : iconConfig.color,
                     p: 1,
                     borderRadius: 2,
                     display: 'flex',

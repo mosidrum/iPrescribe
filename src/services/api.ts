@@ -1,15 +1,12 @@
 import type { Doctor, Prescription, UserStats, DashboardData, DashboardStat, RecentPatient } from '../types';
 
-// Helpers
 const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export const api = {
     getDashboardData: async (limit: number = 5, _startDate?: Date | null, _endDate?: Date | null): Promise<DashboardData> => {
-        // Simulate network latency
         await new Promise(resolve => setTimeout(resolve, 800));
 
-        // Generate dynamic stats with randomization to simulate "different data" on range change
         const stats: DashboardStat[] = [
             { label: 'Total Patients', value: randomInt(10, 100), trend: -0.10, trendLabel: 'Since last week', icon: 'patients' },
             { label: 'Total Doctors', value: randomInt(5, 50), trend: randomInt(-5, 5) / 100, trendLabel: 'Since last week', icon: 'doctors' },
@@ -18,7 +15,6 @@ export const api = {
             { label: 'Prescriptions Issued', value: randomInt(50, 300), trend: 0.12, trendLabel: 'Since last week', icon: 'prescriptions' },
         ];
 
-        // Generate Charts Data
         const consultationTrend = months.map(m => ({ label: m, value: randomInt(30, 150) }));
         const prescriptionTrend = months.map(m => ({ label: m, value: randomInt(40, 200) }));
         const doctorVsPatient = months.map(m => ({ label: m, value: randomInt(20, 100), value2: randomInt(40, 150) }));
@@ -30,8 +26,6 @@ export const api = {
             { label: 'Others', value: randomInt(5, 15) },
         ];
 
-        // Generate Recent Patients
-        // Generate exactly 'limit' number of records
         const recentPatients: RecentPatient[] = Array.from({ length: limit }).map((_, i) => ({
             id: String(i + 1),
             signUpDate: `2024-09-${randomInt(1, 30).toString().padStart(2, '0')}`,
@@ -54,7 +48,6 @@ export const api = {
         };
     },
 
-    // Legacy mock methods
     getDoctors: async (): Promise<Doctor[]> => [],
     getPrescriptions: async (): Promise<Prescription[]> => [],
     getStats: async (): Promise<UserStats> => ({ fulfilledPrescriptions: 0, nextAppointment: 0, pendingActions: 0 })
