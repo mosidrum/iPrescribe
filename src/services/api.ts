@@ -1,9 +1,10 @@
-import type { Doctor, Prescription, UserStats, DashboardData, DashboardStat, RecentPatient } from '../types';
+import type { DashboardData, DashboardStat, RecentPatient } from '../types';
 
 const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export const api = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getDashboardData: async (limit: number = 5, _startDate?: Date | null, _endDate?: Date | null): Promise<DashboardData> => {
         await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -31,7 +32,7 @@ export const api = {
             signUpDate: `2024-09-${randomInt(1, 30).toString().padStart(2, '0')}`,
             name: ['Isagi Yoichi', 'Esther Howard', 'Jenny Wilson', 'Guy Hawkins', 'Jacob Jones', 'Robert Fox', 'Cody Fisher', 'Albert Flores', 'Marvin McKinney', 'Jerome Bell'][i % 10] + (i > 9 ? ` ${i}` : ''),
             email: `user${i}@example.com`,
-            phone: `(555) 555-${String(i).padStart(4, '0')}`,
+            phone: `(555) ${randomInt(100, 999)}-${randomInt(1000, 9999)}`,
             lastSeen: `2024-09-05 15:30:37`,
             location: ['Lagos', 'Abuja', 'Sokoto', 'Kaduna', 'Ogun'][i % 5],
             device: i % 2 === 0 ? 'iOS' : 'Android',
@@ -47,8 +48,4 @@ export const api = {
             recentPatients
         };
     },
-
-    getDoctors: async (): Promise<Doctor[]> => [],
-    getPrescriptions: async (): Promise<Prescription[]> => [],
-    getStats: async (): Promise<UserStats> => ({ fulfilledPrescriptions: 0, nextAppointment: 0, pendingActions: 0 })
 };

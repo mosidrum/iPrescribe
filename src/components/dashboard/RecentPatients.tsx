@@ -64,7 +64,7 @@ export const RecentPatients = ({ data, isLoading }: RecentPatientsProps) => {
                 )}
             </Box>
 
-            <TableContainer>
+            <TableContainer sx={{ overflowX: 'auto' }}>
                 <Table sx={{ minWidth: 1000 }}>
                     <TableHead sx={{ bgcolor: isDark ? '#1F2937' : '#F9FAFB' }}>
                         <TableRow>

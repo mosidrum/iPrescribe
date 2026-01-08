@@ -1,5 +1,5 @@
-import { memo } from 'react';
-import { Box, Paper, Typography, Stack, useTheme } from '@mui/material';
+import { memo, useState, useMemo } from 'react';
+import { Box, Paper, Typography, Stack, useTheme, Grid } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
     Chart as ChartJS,
@@ -152,7 +152,10 @@ export const BarChart = memo(({ data }: { data: { label: string; value: number; 
 export const DonutChart = memo(({ data }: { data: { label: string; value: number }[] }) => {
     const total = data.reduce((acc, current) => acc + current.value, 0);
     const maxVal = Math.max(...data.map(d => d.value));
-    const percentage = total > 0 ? Math.round((maxVal / total) * 100) : 0;
+    const defaultPercentage = total > 0 ? Math.round((maxVal / total) * 100) : 0;
+
+    const [centerText, setCenterText] = useState(`${defaultPercentage}%`);
+
     const chartData = {
         labels: data.map(d => d.label),
         datasets: [
@@ -165,7 +168,7 @@ export const DonutChart = memo(({ data }: { data: { label: string; value: number
         ],
     };
 
-    const options: any = {
+    const options = useMemo(() => ({
         ...commonOptions,
         scales: {
             x: { display: false },
@@ -176,14 +179,24 @@ export const DonutChart = memo(({ data }: { data: { label: string; value: number
             tooltip: {
                 enabled: true
             }
+        },
+        onHover: (_: any, elements: any[]) => {
+            if (elements && elements.length > 0) {
+                const index = elements[0].index;
+                const value = data[index].value;
+                const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                setCenterText(`${percentage}%`);
+            } else {
+                setCenterText(`${defaultPercentage}%`);
+            }
         }
-    };
+    }), [data, total, defaultPercentage]);
 
     return (
         <Box sx={{ position: 'relative', height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Doughnut options={options} data={chartData} />
             <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-                <Typography variant="h4" fontWeight="bold">{percentage}%</Typography>
+                <Typography variant="h4" fontWeight="bold">{centerText}</Typography>
             </Box>
         </Box>
     );
@@ -206,7 +219,7 @@ export const ChartWidget = memo(({ title, type, data, legend, color, label }: Ch
         <Paper
             elevation={0}
             sx={{
-                p: 3,
+                p: { xs: 2, md: 3 },
                 borderRadius: 3,
                 border: isDark ? '1px solid #333' : `1px solid ${palette.ui.dividerLight}`,
                 height: '100%',
@@ -222,22 +235,33 @@ export const ChartWidget = memo(({ title, type, data, legend, color, label }: Ch
             {type === 'line' && <LineChart data={data} color={color} label={label} />}
             {type === 'bar' && <BarChart data={data} />}
             {type === 'donut' && (
-                <Stack direction="row" alignItems="center" spacing={2}>
-                    <Box sx={{ flex: 1 }}>
+                <Stack
+                    direction="row"
+                    flexWrap="wrap"
+                    alignItems="center"
+                    justifyContent="center"
+                    spacing={3}
+                    sx={{ width: '100%' }}
+                >
+                    <Box sx={{ flex: '1 1 150px', display: 'flex', justifyItems: 'center', width: '100%', maxWidth: 200 }}>
                         <DonutChart data={data} />
                     </Box>
                     {legend && (
-                        <Stack spacing={2} sx={{ minWidth: 100 }}>
-                            {data.map((d: any, i: number) => (
-                                <Stack key={d.label} direction="row" spacing={1} alignItems="center">
-                                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: [palette.chart.red, palette.chart.orange, palette.chart.green, palette.chart.blue][i] }} />
-                                    <Box>
-                                        <Typography variant="caption" color="text.secondary" display="block">{d.label}</Typography>
-                                        <Typography variant="subtitle2" fontWeight={700}>{d.value}</Typography>
-                                    </Box>
-                                </Stack>
-                            ))}
-                        </Stack>
+                        <Box sx={{ flex: '1 1 150px', minWidth: 120 }}>
+                            <Grid container spacing={2}>
+                                {data.map((d: any, i: number) => (
+                                    <Grid size={{ xs: 6, sm: 6, md: 12, lg: 12, xl: 6 }} key={d.label}>
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            <Box sx={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, bgcolor: [palette.chart.red, palette.chart.orange, palette.chart.green, palette.chart.blue][i] }} />
+                                            <Box>
+                                                <Typography variant="caption" color="text.secondary" display="block" noWrap>{d.label}</Typography>
+                                                <Typography variant="subtitle2" fontWeight={700}>{d.value}</Typography>
+                                            </Box>
+                                        </Stack>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </Box>
                     )}
                 </Stack>
             )}

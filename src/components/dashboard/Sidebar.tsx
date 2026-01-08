@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react';
-import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Drawer } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
@@ -34,7 +34,12 @@ const ADMIN_MENU = [
     { label: 'Website Updates', icon: <WebIcon />, path: '/website' },
 ];
 
-export const Sidebar = memo(() => {
+interface SidebarProps {
+    mobileOpen?: boolean;
+    onClose?: () => void;
+}
+
+export const Sidebar = memo(({ mobileOpen = false, onClose }: SidebarProps) => {
     const logout = useAuthStore((state) => state.logout);
     const navigate = useNavigate();
 
@@ -43,18 +48,12 @@ export const Sidebar = memo(() => {
         navigate('/login');
     }, [logout, navigate]);
 
-    return (
+    const drawerContent = (
         <Box
             sx={{
-                width: 280,
                 bgcolor: palette.ui.sidebarBg,
                 color: palette.primary.contrastText,
-                height: '100vh',
-                position: 'fixed',
-                left: 0,
-                top: 0,
-                overflowY: 'auto',
-                borderRight: `1px solid ${palette.ui.divider}`,
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column'
             }}
@@ -63,7 +62,7 @@ export const Sidebar = memo(() => {
                 <Logo light />
             </Box>
 
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ flex: 1, overflowY: 'auto' }}>
                 <Typography variant="caption" sx={{ px: 3, mb: 1, display: 'block', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', fontSize: '0.7rem', fontWeight: 600 }}>
                     Main Menu
                 </Typography>
@@ -181,6 +180,41 @@ export const Sidebar = memo(() => {
                     />
                 </ListItemButton>
             </Box>
+        </Box>
+    );
+
+    return (
+        <Box
+            component="nav"
+            sx={{ width: { md: 280 }, flexShrink: { md: 0 } }}
+        >
+            {/* Mobile Drawer */}
+            <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={onClose}
+                ModalProps={{
+                    keepMounted: true, // Better open performance on mobile.
+                }}
+                sx={{
+                    display: { xs: 'block', md: 'none' },
+                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 280, bgcolor: palette.ui.sidebarBg, borderRight: 'none' },
+                }}
+            >
+                {drawerContent}
+            </Drawer>
+
+            {/* Desktop Drawer */}
+            <Drawer
+                variant="permanent"
+                sx={{
+                    display: { xs: 'none', md: 'block' },
+                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 280, bgcolor: palette.ui.sidebarBg, borderRight: `1px solid ${palette.ui.divider}` },
+                }}
+                open
+            >
+                {drawerContent}
+            </Drawer>
         </Box>
     );
 });
