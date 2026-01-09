@@ -188,13 +188,12 @@ export const Sidebar = memo(({ mobileOpen = false, onClose }: SidebarProps) => {
             component="nav"
             sx={{ width: { md: 280 }, flexShrink: { md: 0 } }}
         >
-            {/* Mobile Drawer */}
             <Drawer
                 variant="temporary"
                 open={mobileOpen}
                 onClose={onClose}
                 ModalProps={{
-                    keepMounted: true, // Better open performance on mobile.
+                    keepMounted: true,
                 }}
                 sx={{
                     display: { xs: 'block', md: 'none' },
@@ -204,7 +203,6 @@ export const Sidebar = memo(({ mobileOpen = false, onClose }: SidebarProps) => {
                 {drawerContent}
             </Drawer>
 
-            {/* Desktop Drawer */}
             <Drawer
                 variant="permanent"
                 sx={{

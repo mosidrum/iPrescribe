@@ -6,7 +6,6 @@ import { PublicLayout } from './components/layout/PublicLayout';
 import { useThemeStore } from './store/useThemeStore';
 import { getTheme } from './theme/theme';
 
-// Lazy load pages for performance optimization
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));

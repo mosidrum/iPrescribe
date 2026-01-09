@@ -34,7 +34,6 @@ export interface DashboardData {
     recentPatients: RecentPatient[];
 }
 
-// API Response Types
 export interface LoginResponse {
     status: number;
     message: string;

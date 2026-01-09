@@ -135,9 +135,7 @@ export const StatCard = ({ label, value, trend, trendLabel, icon, loading }: Sta
     );
 };
 
-// Helper function to convert hex color to CSS filter for SVG coloring
 const getIconFilter = (hexColor: string) => {
-    // This is a simplified approach - for production, you might want to use a more robust color conversion
     const colorMap: { [key: string]: string } = {
         '#7F56D9': 'invert(27%) sepia(51%) saturate(2878%) hue-rotate(246deg) brightness(104%) contrast(97%)',
         '#2E90FA': 'invert(64%) sepia(88%) saturate(2298%) hue-rotate(200deg) brightness(103%) contrast(98%)',

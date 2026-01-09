@@ -15,7 +15,6 @@ const DashboardPage = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
-    // Use TanStack React Query for data fetching
     const { 
         stats, 
         recentPatients, 
@@ -35,13 +34,11 @@ const DashboardPage = () => {
     const handleDateClose = (newRange?: string) => {
         if (newRange) {
             setDateRange(newRange);
-            // Refetch data when date range changes
             refetch();
         }
         setAnchorEl(null);
     };
 
-    // Handle error state
     if (error) {
         return (
             <DashboardLayout>
@@ -77,7 +74,6 @@ const DashboardPage = () => {
         <DashboardLayout>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2.5, md: 3 } }}>
 
-                {/* Header Section */}
                 <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} spacing={2}>
                     <Box>
                         <Typography variant="h6" fontWeight="bold" color="text.primary" sx={{ fontSize: '1.25rem' }}>
@@ -175,7 +171,6 @@ const DashboardPage = () => {
                     )}
                 </Grid>
 
-                {/* Charts Section */}
                 <Grid container spacing={{ xs: 2.5, md: 3 }}>
                     <Grid size={{ xs: 12, md: 6 }}>
                         <ChartWidget
