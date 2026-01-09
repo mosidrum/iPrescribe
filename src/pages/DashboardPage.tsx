@@ -4,7 +4,6 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { DashboardLayout } from '../components/dashboard/DashboardLayout';
 import { StatCard } from '../components/dashboard/StatCard';
-import { ChartWidget } from '../components/dashboard/Charts';
 import { RecentPatients } from '../components/dashboard/RecentPatients';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { useDashboardStore } from '../store/useDashboardStore';
@@ -16,7 +15,7 @@ const DashboardPage = () => {
     const open = Boolean(anchorEl);
 
     // Use TanStack React Query for data fetching
-    const { data, isLoading, error, refetch } = useDashboardData();
+    const { stats, recentPatients, isLoading, error, refetch } = useDashboardData();
 
     const handleDateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -35,11 +34,11 @@ const DashboardPage = () => {
     if (error) {
         return (
             <DashboardLayout>
-                <Box sx={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     minHeight: '400px',
                     textAlign: 'center'
                 }}>
@@ -49,8 +48,8 @@ const DashboardPage = () => {
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         There was an error connecting to the iPrescribe API. Please try again.
                     </Typography>
-                    <Button 
-                        variant="contained" 
+                    <Button
+                        variant="contained"
                         onClick={() => refetch()}
                         sx={{ bgcolor: palette.ui.buttonBg }}
                     >
@@ -61,7 +60,7 @@ const DashboardPage = () => {
         );
     }
 
-    const stats = data?.stats || [];
+
 
     return (
         <DashboardLayout>
@@ -165,47 +164,10 @@ const DashboardPage = () => {
                     )}
                 </Grid>
 
-                <Grid container spacing={{ xs: 2.5, md: 3 }}>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                        <ChartWidget
-                            title="Consultation Over Time"
-                            type="line"
-                            data={data?.consultationTrend || []}
-                            color={palette.chart.blue}
-                            label="Consultations"
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                        <ChartWidget
-                            title="Prescription Volume Trend"
-                            type="line"
-                            data={data?.prescriptionTrend || []}
-                            color={palette.chart.green}
-                            label="Prescriptions"
-                        />
-                    </Grid>
-                </Grid>
 
-                <Grid container spacing={{ xs: 2.5, md: 3 }}>
-                    <Grid size={{ xs: 12, md: 7 }}>
-                        <ChartWidget
-                            title="Active Doctors vs Active Patients"
-                            type="bar"
-                            data={data?.doctorVsPatient || []}
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 5 }}>
-                        <ChartWidget
-                            title="Top Specialties in Demand"
-                            type="donut"
-                            data={data?.specialties || []}
-                            legend={true}
-                        />
-                    </Grid>
-                </Grid>
 
                 <RecentPatients
-                    data={data?.recentPatients}
+                    data={recentPatients}
                     isLoading={isLoading}
                 />
 

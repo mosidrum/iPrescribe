@@ -15,6 +15,7 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useAuthStore } from '../store/useAuthStore';
+import { authApi } from '../services/api';
 import { Logo } from '../components/common/Logo';
 import { palette } from '../theme/theme';
 
@@ -42,11 +43,17 @@ const LoginPage = () => {
         setLoading(true);
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const response = await authApi.login(data.email, data.password);
+
+            // Save token for API requests
+            if (response.token) {
+                localStorage.setItem('auth_token', response.token);
+            }
+
             login(data.email);
             navigate('/dashboard');
-        } catch (err) {
-            setSubmitError('Invalid credentials');
+        } catch (err: any) {
+            setSubmitError(err.message || 'Login failed. Please check your credentials.');
         } finally {
             setLoading(false);
         }
