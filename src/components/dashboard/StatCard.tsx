@@ -85,7 +85,6 @@ export const StatCard = ({ label, value, trend, trendLabel, icon, loading }: Sta
                 p: 3,
                 bgcolor: isDark ? 'background.paper' : config.cardBg,
                 border: isDark ? `1px solid #333` : 'none',
-                borderRadius: 3,
                 height: '100%',
             }}
         >
@@ -102,14 +101,14 @@ export const StatCard = ({ label, value, trend, trendLabel, icon, loading }: Sta
                     justifyContent: 'center'
                 }}>
                     {config.useCardIcon ? (
-                        <img 
-                            src={cardIcon} 
-                            alt="card icon" 
-                            style={{ 
-                                width: 20, 
+                        <img
+                            src={cardIcon}
+                            alt="card icon"
+                            style={{
+                                width: 20,
                                 height: 20,
                                 filter: isDark ? 'none' : `brightness(0) saturate(100%) ${getIconFilter(config.iconColor)}`
-                            }} 
+                            }}
                         />
                     ) : (
                         config.icon && <config.icon sx={{ color: isDark ? 'inherit' : config.iconColor, fontSize: 20 }} />

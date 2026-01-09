@@ -5,6 +5,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { DashboardLayout } from '../components/dashboard/DashboardLayout';
 import { StatCard } from '../components/dashboard/StatCard';
 import { RecentPatients } from '../components/dashboard/RecentPatients';
+import { ChartWidget } from '../components/dashboard/Charts';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { useDashboardStore } from '../store/useDashboardStore';
 import { palette } from '../theme/theme';
@@ -15,7 +16,17 @@ const DashboardPage = () => {
     const open = Boolean(anchorEl);
 
     // Use TanStack React Query for data fetching
-    const { stats, recentPatients, isLoading, error, refetch } = useDashboardData();
+    const { 
+        stats, 
+        recentPatients, 
+        consultationTrend,
+        prescriptionTrend,
+        doctorVsPatient,
+        specialties,
+        isLoading, 
+        error, 
+        refetch 
+    } = useDashboardData();
 
     const handleDateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -162,6 +173,43 @@ const DashboardPage = () => {
                             </Grid>
                         ))
                     )}
+                </Grid>
+
+                {/* Charts Section */}
+                <Grid container spacing={{ xs: 2.5, md: 3 }}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <ChartWidget
+                            title="Consultation Trend"
+                            type="line"
+                            data={consultationTrend}
+                            color={palette.chart.blue}
+                            label="Consultations"
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <ChartWidget
+                            title="Prescription Volume Trend"
+                            type="line"
+                            data={prescriptionTrend}
+                            color={palette.chart.green}
+                            label="Prescriptions"
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <ChartWidget
+                            title="Active Doctors vs Patients"
+                            type="bar"
+                            data={doctorVsPatient}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <ChartWidget
+                            title="Top Specialties in Demand"
+                            type="donut"
+                            data={specialties}
+                            legend={true}
+                        />
+                    </Grid>
                 </Grid>
 
 

@@ -45,7 +45,6 @@ const LoginPage = () => {
         try {
             const response = await authApi.login(data.email, data.password);
 
-            // Save token for API requests
             if (response.token) {
                 localStorage.setItem('auth_token', response.token);
             }
@@ -53,7 +52,15 @@ const LoginPage = () => {
             login(data.email);
             navigate('/dashboard');
         } catch (err: any) {
-            setSubmitError(err.message || 'Login failed. Please check your credentials.');
+            let errorMessage = 'Login failed. Please check your credentials.';
+            
+            if (err.data && err.data.message) {
+                errorMessage = err.data.message;
+            } else if (err.message) {
+                errorMessage = err.message;
+            }
+            
+            setSubmitError(errorMessage);
         } finally {
             setLoading(false);
         }
