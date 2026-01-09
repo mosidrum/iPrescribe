@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Grid, Box, Typography, Button, Stack, Menu, MenuItem } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -7,22 +6,17 @@ import { DashboardLayout } from '../components/dashboard/DashboardLayout';
 import { StatCard } from '../components/dashboard/StatCard';
 import { ChartWidget } from '../components/dashboard/Charts';
 import { RecentPatients } from '../components/dashboard/RecentPatients';
-import { api } from '../services/api';
+import { useDashboardData } from '../hooks/useDashboardData';
 import { useDashboardStore } from '../store/useDashboardStore';
 import { palette } from '../theme/theme';
 
 const DashboardPage = () => {
-    const { limit, dateRange, setDateRange } = useDashboardStore();
+    const { dateRange, setDateRange } = useDashboardStore();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
-    const { data, isLoading } = useQuery({
-        queryKey: ['dashboard-data', limit, dateRange],
-        queryFn: () => api.getDashboardData(limit),
-        staleTime: 0,
-    });
-
-    const stats = data?.stats || [];
+    // Use TanStack React Query for data fetching
+    const { data, isLoading, error, refetch } = useDashboardData();
 
     const handleDateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -31,30 +25,64 @@ const DashboardPage = () => {
     const handleDateClose = (newRange?: string) => {
         if (newRange) {
             setDateRange(newRange);
+            // Refetch data when date range changes
+            refetch();
         }
         setAnchorEl(null);
     };
 
+    // Handle error state
+    if (error) {
+        return (
+            <DashboardLayout>
+                <Box sx={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    minHeight: '400px',
+                    textAlign: 'center'
+                }}>
+                    <Typography variant="h6" color="error" gutterBottom>
+                        Failed to load dashboard data
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        There was an error connecting to the iPrescribe API. Please try again.
+                    </Typography>
+                    <Button 
+                        variant="contained" 
+                        onClick={() => refetch()}
+                        sx={{ bgcolor: palette.ui.buttonBg }}
+                    >
+                        Retry
+                    </Button>
+                </Box>
+            </DashboardLayout>
+        );
+    }
+
+    const stats = data?.stats || [];
+
     return (
         <DashboardLayout>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, md: 3 } }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2.5, md: 3 } }}>
 
                 {/* Header Section */}
-                <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', md: 'center' }} spacing={2}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} spacing={2}>
                     <Box>
-                        <Typography variant="h5" fontWeight="bold" color="text.primary">
+                        <Typography variant="h6" fontWeight="bold" color="text.primary" sx={{ fontSize: '1.25rem' }}>
                             Dashboard
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
                             Latest update for the last 7 days. check now
                         </Typography>
                     </Box>
 
-                    <Stack direction="row" alignItems="center" sx={{ flexWrap: 'wrap', gap: 2 }}>
+                    <Stack direction="row" alignItems="center" spacing={1.5}>
                         <Button
                             variant="outlined"
                             disableRipple
-                            startIcon={<CalendarTodayIcon fontSize="small" />}
+                            startIcon={<CalendarTodayIcon sx={{ fontSize: '16px !important' }} />}
                             endIcon={<KeyboardArrowDownIcon />}
                             onClick={handleDateClick}
                             sx={{
@@ -62,10 +90,11 @@ const DashboardPage = () => {
                                 borderColor: 'divider',
                                 color: 'text.primary',
                                 textTransform: 'none',
-                                py: 1,
-                                px: 2,
+                                py: 0.875,
+                                px: 1.5,
                                 bgcolor: 'background.paper',
                                 whiteSpace: 'nowrap',
+                                fontSize: '0.8rem',
                                 '&:hover': {
                                     bgcolor: 'background.paper',
                                     borderColor: 'text.secondary',
@@ -92,9 +121,10 @@ const DashboardPage = () => {
                                 bgcolor: palette.ui.buttonBg,
                                 borderRadius: '8px',
                                 textTransform: 'none',
-                                py: 1,
-                                px: 3,
+                                py: 0.875,
+                                px: 2.5,
                                 fontWeight: 600,
+                                fontSize: '0.8rem',
                                 '&:hover': {
                                     bgcolor: palette.primary.dark,
                                     boxShadow: 'none',
@@ -106,7 +136,7 @@ const DashboardPage = () => {
                     </Stack>
                 </Stack>
 
-                <Grid container spacing={{ xs: 2, md: 3 }}>
+                <Grid container spacing={{ xs: 2.5, md: 3 }}>
                     {isLoading ? (
                         Array.from({ length: 5 }).map((_, i) => (
                             <Grid size={{ xs: 12, sm: 6, md: 2.4 }} key={i}>
@@ -135,7 +165,7 @@ const DashboardPage = () => {
                     )}
                 </Grid>
 
-                <Grid container spacing={{ xs: 2, md: 3 }}>
+                <Grid container spacing={{ xs: 2.5, md: 3 }}>
                     <Grid size={{ xs: 12, md: 6 }}>
                         <ChartWidget
                             title="Consultation Over Time"
@@ -156,7 +186,7 @@ const DashboardPage = () => {
                     </Grid>
                 </Grid>
 
-                <Grid container spacing={{ xs: 2, md: 3 }}>
+                <Grid container spacing={{ xs: 2.5, md: 3 }}>
                     <Grid size={{ xs: 12, md: 7 }}>
                         <ChartWidget
                             title="Active Doctors vs Active Patients"

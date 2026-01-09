@@ -130,21 +130,45 @@ export const BarChart = memo(({ data }: { data: { label: string; value: number; 
                 data: data.map(d => d.value),
                 backgroundColor: palette.chart.orange,
                 borderRadius: 4,
-                barThickness: 6,
+                barThickness: 8,
             },
             {
                 label: 'Patients',
                 data: data.map(d => d.value2),
                 backgroundColor: palette.chart.blue,
                 borderRadius: 4,
-                barThickness: 6,
+                barThickness: 8,
             },
         ],
     };
 
+    const barOptions: ChartOptions<'bar'> = {
+        ...commonOptions,
+        plugins: {
+            ...commonOptions.plugins,
+            legend: {
+                display: true,
+                position: 'top' as const,
+                align: 'end' as const,
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    boxWidth: 6,
+                    boxHeight: 6,
+                    padding: 20,
+                    font: {
+                        family: 'Montserrat',
+                        size: 11,
+                    },
+                    color: '#667085'
+                }
+            },
+        },
+    };
+
     return (
-        <Box sx={{ width: '100%', height: 200 }}>
-            <Bar options={commonOptions} data={chartData} />
+        <Box sx={{ width: '100%', height: 220 }}>
+            <Bar options={barOptions} data={chartData} />
         </Box>
     );
 });
@@ -161,9 +185,9 @@ export const DonutChart = memo(({ data }: { data: { label: string; value: number
         datasets: [
             {
                 data: data.map(d => d.value),
-                backgroundColor: [palette.chart.red, palette.chart.orange, palette.chart.green, palette.chart.blue],
+                backgroundColor: [palette.chart.blue, palette.chart.green, palette.chart.orange, palette.chart.red],
                 borderWidth: 0,
-                cutout: '75%',
+                cutout: '70%',
             },
         ],
     };
@@ -193,10 +217,10 @@ export const DonutChart = memo(({ data }: { data: { label: string; value: number
     }), [data, total, defaultPercentage]);
 
     return (
-        <Box sx={{ position: 'relative', height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ position: 'relative', height: 160, width: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Doughnut options={options} data={chartData} />
             <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-                <Typography variant="h4" fontWeight="bold">{centerText}</Typography>
+                <Typography variant="h5" fontWeight="bold">{centerText}</Typography>
             </Box>
         </Box>
     );
@@ -214,22 +238,22 @@ interface ChartWidgetProps {
 export const ChartWidget = memo(({ title, type, data, legend, color, label }: ChartWidgetProps) => {
     const theme = useTheme();
     const isDark = theme.palette.mode === 'dark';
+    const donutColors = [palette.chart.blue, palette.chart.green, palette.chart.orange, palette.chart.red];
 
     return (
         <Paper
             elevation={0}
             sx={{
-                p: { xs: 2, md: 3 },
+                p: 3,
                 borderRadius: 3,
-                border: isDark ? '1px solid #333' : `1px solid ${palette.ui.dividerLight}`,
+                border: `1px solid ${isDark ? '#333' : palette.ui.dividerLight}`,
                 height: '100%',
                 bgcolor: 'background.paper',
-                transition: 'all 0.3s ease'
             }}
         >
-            <Stack direction="row" justifyContent="space-between" mb={3}>
-                <Typography variant="h6" fontWeight={600} sx={{ fontFamily: 'Montserrat' }}>{title}</Typography>
-                <MoreHorizIcon color="action" />
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2.5}>
+                <Typography variant="h6" fontWeight={600} sx={{ fontFamily: 'Montserrat', fontSize: '1.125rem' }}>{title}</Typography>
+                <MoreHorizIcon color="action" sx={{ fontSize: 24 }} />
             </Stack>
 
             {type === 'line' && <LineChart data={data} color={color} label={label} />}
@@ -237,27 +261,26 @@ export const ChartWidget = memo(({ title, type, data, legend, color, label }: Ch
             {type === 'donut' && (
                 <Stack
                     direction="row"
-                    flexWrap="wrap"
                     alignItems="center"
-                    justifyContent="center"
-                    spacing={3}
+                    justifyContent="space-between"
+                    spacing={2}
                     sx={{ width: '100%' }}
                 >
-                    <Box sx={{ flex: '1 1 150px', display: 'flex', justifyItems: 'center', width: '100%', maxWidth: 200 }}>
+                    <Box sx={{ flexShrink: 0 }}>
                         <DonutChart data={data} />
                     </Box>
                     {legend && (
-                        <Box sx={{ flex: '1 1 150px', minWidth: 120 }}>
-                            <Grid container spacing={2}>
+                        <Box sx={{ flex: 1 }}>
+                            <Grid container spacing={1.5}>
                                 {data.map((d: any, i: number) => (
-                                    <Grid size={{ xs: 6, sm: 6, md: 12, lg: 12, xl: 6 }} key={d.label}>
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            <Box sx={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, bgcolor: [palette.chart.red, palette.chart.orange, palette.chart.green, palette.chart.blue][i] }} />
-                                            <Box>
-                                                <Typography variant="caption" color="text.secondary" display="block" noWrap>{d.label}</Typography>
-                                                <Typography variant="subtitle2" fontWeight={700}>{d.value}</Typography>
-                                            </Box>
-                                        </Stack>
+                                    <Grid size={{ xs: 6 }} key={d.label}>
+                                        <Box>
+                                            <Typography variant="caption" color="text.secondary" display="block" sx={{ fontSize: '0.75rem', mb: 0.25 }}>{d.label}</Typography>
+                                            <Stack direction="row" spacing={0.75} alignItems="center">
+                                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, bgcolor: donutColors[i] }} />
+                                                <Typography variant="h6" fontWeight={700} sx={{ fontSize: '1.25rem' }}>{d.value}</Typography>
+                                            </Stack>
+                                        </Box>
                                     </Grid>
                                 ))}
                             </Grid>
